@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  inputs:
+    command: 'build'
+    Dockerfile: '**/mlflow-docker/Dockerfile'
+    tags: 'latest'
+    arguments: '-t dna.mlflow'
+- task: ECRPushImage@1
+  inputs:
+    awsCredentials: 'ECR Push'
+    regionName: 'eu-central-1'
+    imageSource: 'imagename'
+    sourceImageName: 'dna.mlflow'
+    repositoryName: 'dna/mlflow'
