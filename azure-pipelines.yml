@@ -13,7 +13,7 @@ steps:
 - task: Docker@2
   inputs:
     command: 'build'
-    Dockerfile: '**/mlflow-docker/Dockerfile'
+    Dockerfile: '**/mlflow-image/Dockerfile'
     tags: 'latest'
     arguments: '-t dna.mlflow'
 - task: ECRPushImage@1
