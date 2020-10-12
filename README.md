@@ -1,20 +1,30 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Helm Charts
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This is my personal Helm Chart repository. You can point helm to it via
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+```bash
+helm repo add larribas https://larribas.me/helm-charts
+```
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+All charts in this repo:
+- Rely either on official docker images, or images created and built by me.
+- Are pinned to a specific version
+- Provide flexibility when choosing the extra Kubernetes artifacts you want to create (RBAC, Ingress, and so on)
+- Have worked for me in production at the last time of publication
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+
+
+## Charts
+
+- [MLFlow](mlflow/README.md) (stable and production-ready) - An open source platform for the machine learning lifecycle ([mlflow.org](https://mlflow.org/))
+- [Airflow](airflow/README.md) (stable and production-ready) - A platform to programmatically author, schedule and monitor workflows ([apache.airflow.org](https://airflow.apache.org/))
+
+
+## Maintainer Cheat Sheet
+
+1. Add/modify a chart
+1. Update docs with [helm-docs](https://github.com/norwoodj/helm-docs)
+1. Bump up the `version` in `<project>/Chart.yaml`
+1. Run `helm package <project>` to create a `<project>-<version>.tgz` file
+1. Update the repository's index via `helm repo index .`
+
