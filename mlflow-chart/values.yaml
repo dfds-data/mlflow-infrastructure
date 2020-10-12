@@ -26,10 +26,10 @@ image:
   pullPolicy: Always
 
   # image.repository -- The fully qualified name of the docker image to use
-  repository: dingobar/mlflow
+  repository: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:latest
 
   # image.tag -- The tag for the repository (e.g. 'latest')
-  tag:
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: "mlflow-tracking-server"
