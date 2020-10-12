@@ -27,3 +27,5 @@ steps:
       set -e
       echo "will this work?"
       echo $(helm version)
+      helm chart save . mlflow
+      helm chart save . 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
