@@ -9,17 +9,21 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+- name: HELM_EXPERIMENTAL_OCI
+  value: 1 
+
 steps:
-- task: Docker@2
+- task: HelmInstaller@0
   inputs:
-    command: 'build'
-    Dockerfile: '**/mlflow-image/Dockerfile'
-    tags: 'latest'
-    arguments: '-t dna.mlflow'
-- task: ECRPushImage@1
+    helmVersion: '2.14.1'
+    installKubectl: true
+- task: AWSShellScript@1
   inputs:
     awsCredentials: 'ECR Push'
     regionName: 'eu-central-1'
-    imageSource: 'imagename'
-    sourceImageName: 'dna.mlflow'
-    repositoryName: 'dna/mlflow'
+    scriptType: 'inline'
+    inlineScript: |
+      set -e
+      echo "will this work?"
+      echo $(helm version)
