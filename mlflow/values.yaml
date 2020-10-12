@@ -5,14 +5,14 @@ backendStore:
 
   # backendStore.postgres -- A map with the values for (username, password, host, port and database).
   postgres:
-  #   username:
-  #   password: 
-  #   host:
-  #   port:
-  #   database:
+    username: mlflow
+    password: $(PSQL_MLFLOW_PASSWORD)
+    host: $(PSQL_HOST)
+    port: 5432
+    database: mlflow
 
 # defaultArtifactRoot -- A local or remote filepath (e.g. s3://my-bucket). It is mandatory when specifying a database backend store
-defaultArtifactRoot:
+defaultArtifactRoot: $(MLFLOW_S3_BACKEND_URI)
 
 # extraArgs -- A map of arguments and values to pass to the `mlflow server` command
 extraArgs: {}
@@ -60,28 +60,30 @@ service:
 ingress:
   enabled: false
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+    traefik.ingress.kubernetes.io/auth-type: basic
+    traefik.ingress.kubernetes.io/auth-secret: $(CAPABILITYNAME)-basic-authentication-credentials
   hosts:
-    - host: chart-example.local
-
-      # ingress.hosts[0].paths -- A list of objects. Each object should contain a `path` key, and may contain a `serviceNameOverride` and a `servicePortOverride` key. If you do not specify any overrides, the Chart will use the ones for the service it creates automatically. We allow overrides to allow advanced behavior like SSL redirection on the AWS ALB Ingress Controller.
-      paths: []
-      # - path: "/*"
-      #   serviceNameOverride: chart-example
-      #   servicePortOverride: 80
+    - host: app.hellman.oxygen.dfds.cloud
+      http:
+        paths:
+          - path: /$(CAPABILITYNAME)/mlflow
+            backend:
+              serviceName: mlflow-tracking-server
+              servicePort: external
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 nodeSelector: {}
 
@@ -91,6 +93,7 @@ affinity: {}
 
 # set true to expose prometheus
 prometheus:
-  expose: false
+  expose: true
 
-podAnnotations: {}
+podAnnotations:
+  iam.amazonaws.com/role: $(MLFLOW_IAM_ROLE_ARN)
