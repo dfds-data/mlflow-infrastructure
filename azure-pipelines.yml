@@ -46,6 +46,6 @@ steps:
         aws ecr get-login-password \
           --region us-west-2 | helm registry login \
           --username AWS \
-          --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
+          --password-stdin 272250499452.dkr.ecr.eu-central-1.amazonaws.com
         helm chart push 272250499452.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
       failOnStandardError: true
