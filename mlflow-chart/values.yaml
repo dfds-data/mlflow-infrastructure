@@ -26,7 +26,7 @@ image:
   pullPolicy: Always
 
   # image.repository -- The fully qualified name of the docker image to use
-  repository: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:latest
+  repository: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow
 
   # image.tag -- The tag for the repository (e.g. 'latest')
   tag: "latest"
