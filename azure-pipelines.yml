@@ -16,19 +16,6 @@ steps:
   inputs:
     helmVersion: '2.14.1'
     installKubectl: true
-- task: AWSShellScript@1
-  displayName: Save and push chart
-  inputs:
-    awsCredentials: 'ECR Push'
-    regionName: 'eu-central-1'
-    scriptType: 'inline'
-    inlineScript: |
-      echo "Deploying the helm chart to ECR"
-      echo $(helm version)
-      helm chart save mlflow-chart/ mlflow
-      helm chart save mlflow-chart/ 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
-      helm chart push 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
-    failOnStandardError: true
 - task: Docker@2
   displayName: Build docker image
   inputs:
@@ -39,8 +26,22 @@ steps:
 - task: ECRPushImage@1
   displayName: Push the image to shared ECR
   inputs:
-    awsCredentials: 'ECR Push'
+    awsCredentials: 'ECR push'
     regionName: 'eu-central-1'
     imageSource: 'imagename'
     sourceImageName: 'dna.mlflow'
     repositoryName: 'dna/mlflow'
+- task: AWSShellScript@1
+  displayName: Save and push chart to mlops ECR for charts (ECR push does not allow to use shared ECR)
+  inputs:
+    awsCredentials: 'AWS mlops'
+    regionName: 'eu-central-1'
+    scriptType: 'inline'
+    inlineScript: |
+      echo "Deploying the helm chart to ECR"
+      echo $(helm version)
+      helm chart save mlflow-chart/ mlflow
+      helm chart save mlflow-chart/ 272250499452.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
+      aws ecr describe-repositories --repository-names dna/mlflow || aws ecr create-repository --repository-name dna/mlflow
+      helm chart push 272250499452.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow:mlflow
+    failOnStandardError: true
