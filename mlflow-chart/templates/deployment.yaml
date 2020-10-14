@@ -30,8 +30,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - --host=0.0.0.0
-            - --port=80
+            - --port=5000
           {{- if .Values.backendStore.filepath }}
             - --backend-store-uri={{ .Values.backendStore.filepath }}
           {{- else if .Values.backendStore.postgres }}
@@ -56,7 +55,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 5000
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
