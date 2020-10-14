@@ -34,7 +34,7 @@ steps:
   - task: AWSShellScript@1
     displayName: Save and push chart to mlops ECR for charts (ECR push does not allow to use shared ECR)
     inputs:
-      awsCredentials: "ECR push"
+      awsCredentials: "AWS mlops"
       regionName: "eu-central-1"
       scriptType: "inline"
       inlineScript: |
