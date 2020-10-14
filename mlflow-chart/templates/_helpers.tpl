@@ -49,6 +49,7 @@ Selector labels
 {{- define "mlflow.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "mlflow.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app: mlflow.server
 {{- end -}}
 
 {{/*

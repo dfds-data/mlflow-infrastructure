@@ -6,38 +6,38 @@ backendStore:
   # backendStore.postgres -- A map with the values for (username, password, host, port and database).
   postgres:
     username: mlflow
-    password: $(PSQL_MLFLOW_PASSWORD)
-    host: $(PSQL_HOST)
+    password: 1n3Dr5D=OFc0oj*ho4)OVeVqWD6sD3bL
+    host: postgres-mlops.cmckd3o7hiss.eu-central-1.rds.amazonaws.com
     port: 5432
     database: mlflow
 
 # defaultArtifactRoot -- A local or remote filepath (e.g. s3://my-bucket). It is mandatory when specifying a database backend store
-defaultArtifactRoot: $(MLFLOW_S3_BACKEND_URI)
+defaultArtifactRoot: s3://mlops-mlflow-dzelu
 
 # extraArgs -- A map of arguments and values to pass to the `mlflow server` command
 extraArgs:
-  {}
+  gunicorn-opts: --log-level debug
   # workers: 2
   # expose-prometheus: yes
 
 replicaCount: 1
 
 image:
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
   # image.repository -- The fully qualified name of the docker image to use
   repository: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/dna/mlflow
 
   # image.tag -- The tag for the repository (e.g. 'latest')
-  tag: "latest"
+  tag:
 
 imagePullSecrets: []
-nameOverride: "mlflow-tracking-server"
-fullnameOverride: "mlflow-chart"
+nameOverride: ""
+fullnameOverride: ""
 
 serviceAccount:
   # serviceAccount.create -- Specifies whether a service account should be created
-  create: false
+  create: true
   # serviceAccount.annotations -- Annotations to add to the service account
   annotations: {}
   # serviceAccount.name -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
@@ -57,28 +57,19 @@ securityContext:
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 5000
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
-    traefik.ingress.kubernetes.io/auth-type: basic
-    traefik.ingress.kubernetes.io/auth-secret: $(CAPABILITYNAME)-basic-authentication-credentials
   hosts:
     - host: app.hellman.oxygen.dfds.cloud
-      http:
-        paths:
-          - path: /$(CAPABILITYNAME)/mlflow
-            backend:
-              serviceName: mlflow-tracking-server
-              servicePort: external
+      paths:
+      - path: /mlops/mlflow/
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
 resources:
   limits:
@@ -96,7 +87,6 @@ affinity: {}
 
 # set true to expose prometheus
 prometheus:
-  expose: true
+  expose: false
 
-podAnnotations:
-  iam.amazonaws.com/role: $(MLFLOW_IAM_ROLE_ARN)
+podAnnotations: {}
