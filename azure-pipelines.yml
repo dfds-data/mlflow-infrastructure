@@ -84,5 +84,5 @@ stages:
           terraform init
           terraform apply -auto-approve plan.tfplan
         disableAutoCwd: true
-        workingDirectory: '$(System.ArtifactsDirectory)/tf/infrastructure'
+        workingDirectory: '$(System.ArtifactsDirectory)/tf/'
         failOnStandardError: true
