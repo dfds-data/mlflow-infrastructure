@@ -47,33 +47,9 @@ stages:
         inlineScript: |
           terraform init
           terraform plan --out plan.tfplan
+          terraform apply -auto-approve plan.tfplan
         disableAutoCwd: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
         failOnStandardError: true
     - publish: 'infrastructure'
       artifact: 'tf'
-- stage: Deploy
-  displayName: Deploy infrastructure
-  dependsOn: Build
-  condition: succeeded('Build')
-  jobs:
-  - job: Deploy
-    displayName: Deploy infra
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - download: current
-      artifact: tf
-    - task: AWSShellScript@1
-      displayName: Apply TF plan
-      inputs:
-        awsCredentials: 'AWS mlops'
-        regionName: 'eu-central-1'
-        scriptType: 'inline'
-        inlineScript: |
-          echo $(ls)
-          echo $(ls ..)
-          terraform apply -auto-approve plan.tfplan
-        disableAutoCwd: true
-        workingDirectory: '$(Pipeline.Workspace)/tf/'
-        failOnStandardError: true
