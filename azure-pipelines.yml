@@ -35,5 +35,5 @@ stages:
         imageSource: "imagename"
         sourceImageName: "mlflow"
         repositoryName: "dna/mlflow"
-        pushTag: "$(tag)"
+        pushTag: "$(mlflow_version.tag)"
       displayName: "Push mlflow image"
