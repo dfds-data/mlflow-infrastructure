@@ -28,7 +28,7 @@ stages:
       inputs:
         command: 'build'
         Dockerfile: './mlflow-image/Dockerfile'
-        arguments: '-t mlflow:$(MLFLOW_VERSION)'
+        arguments: '-t mlflow:$(tag)'
     - task: ECRPushImage@1
       inputs:
         awsCredentials: "ECR Push"
@@ -36,5 +36,5 @@ stages:
         imageSource: "imagename"
         sourceImageName: "mlflow"
         repositoryName: "dna/mlflow"
-        pushTag: "$(MLFLOW_VERSION)"
+        pushTag: "$(tag)"
       displayName: "Push mlflow image"
