@@ -46,7 +46,7 @@ stages:
         scriptType: 'inline'
         inlineScript: |
           terraform init
-          terraform plan --out $(System.DefaultWorkingDirectory)/infrastructure/plan.tfplan
+          terraform plan --out plan.tfplan
         disableAutoCwd: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
         failOnStandardError: true
