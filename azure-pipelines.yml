@@ -60,6 +60,8 @@ stages:
         publishLocation: 'Container'
 - stage: Deploy
   displayName: Deploy infrastructure
+  dependsOn: Build
+  condition: succeeded('Build')
   jobs:
   - job: Deploy
     displayName: Deploy infra
