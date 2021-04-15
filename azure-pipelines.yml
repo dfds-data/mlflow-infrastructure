@@ -37,3 +37,50 @@ stages:
         repositoryName: "dna/mlflow"
         pushTag: "$(mlflow_version.tag)"
       displayName: "Push mlflow image"
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: '0.14.3'
+    - task: AWSShellScript@1
+      displayName: Create TF plan
+      inputs:
+        awsCredentials: 'AWS mlops'
+        regionName: 'eu-central-1'
+        scriptType: 'inline'
+        inlineScript: |
+          terraform init
+          terraform plan --out plan.tfplan
+          # terraform apply -auto-approve plan.tfplan
+        disableAutoCwd: true
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
+        failOnStandardError: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/infrastructure'
+        ArtifactName: 'tf'
+        publishLocation: 'Container'
+- stage: Deploy
+  displayName: Deploy infrastructure
+  jobs:
+  - job: Deploy
+    displayName: Deploy infra
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'tf'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AWSShellScript@1
+      displayName: Apply TF plan
+      inputs:
+        awsCredentials: 'AWS mlops'
+        regionName: 'eu-central-1'
+        scriptType: 'inline'
+        inlineScript: |
+          terraform init
+          terraform apply -auto-approve plan.tfplan
+        disableAutoCwd: true
+        workingDirectory: '$(System.ArtifactsDirectory)/tf/infrastructure'
+        failOnStandardError: true
