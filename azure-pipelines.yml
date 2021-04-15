@@ -71,8 +71,10 @@ stages:
         regionName: 'eu-central-1'
         scriptType: 'inline'
         inlineScript: |
+          echo $(ls)
+          echo $(ls ..)
           terraform init
           terraform apply -auto-approve plan.tfplan
         disableAutoCwd: true
-        workingDirectory: '$(System.ArtifactsDirectory)/tf/'
+        workingDirectory: '$(Pipeline.Workspace)/tf/'
         failOnStandardError: true
