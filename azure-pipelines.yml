@@ -50,13 +50,12 @@ stages:
         inlineScript: |
           terraform init
           terraform plan --out plan.tfplan
-          # terraform apply -auto-approve plan.tfplan
         disableAutoCwd: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
         failOnStandardError: true
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/infrastructure'
+        PathtoPublish: '$(System.DefaultWorkingDirectory)/infrastructure'
         ArtifactName: 'tf'
         publishLocation: 'Container'
 - stage: Deploy
