@@ -64,9 +64,6 @@ stages:
     steps:
     - download: current
       artifact: tf
-      patterns: |
-        "**/*.tf"
-        "**/*.tfplan"
     - task: AWSShellScript@1
       displayName: Apply TF plan
       inputs:
