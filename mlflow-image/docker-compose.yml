@@ -1,16 +1,8 @@
 version: "3.8"
 services:
   mlflow:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     command: --host=0.0.0.0 --port=80 --backend-store-uri=postgresql://postgres:postgres@db:5432 --default-artifact-root=file//var/mlflow/mlruns
-    environment:
-      - DBUSERNAME=postgres
-      - DBPASSWORD=postgres
-      - DBHOST=db
-      - DBDATABASE=postgres
-      - MLFLOW_ARTIFACT_S3_URI=/var/mlflow/mlruns
     ports:
       - "5000:80"
     depends_on:

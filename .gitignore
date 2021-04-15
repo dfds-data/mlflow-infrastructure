@@ -1,2 +1,5 @@
 */test_values.yaml
 mlruns
+venv
+.terraform*
+*.tfstate*
