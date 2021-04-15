@@ -73,7 +73,6 @@ stages:
         inlineScript: |
           echo $(ls)
           echo $(ls ..)
-          terraform init
           terraform apply -auto-approve plan.tfplan
         disableAutoCwd: true
         workingDirectory: '$(Pipeline.Workspace)/tf/'
