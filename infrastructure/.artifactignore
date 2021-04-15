@@ -1,2 +1,2 @@
-.tf
-.tfplan
+.terraform
+.terraform.lock.hcl
