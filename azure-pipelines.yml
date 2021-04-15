@@ -1,0 +1,38 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Image
+    displayName: Image
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - bash: export MLFLOW_VERSION=$(cat mlflow-image/mlflow_version)
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: 'build'
+        Dockerfile: './mlflow-image/Dockerfile'
+        arguments: '-t mlflow:$(MLFLOW_VERSION)'
+    - task: ECRPushImage@1
+      inputs:
+        awsCredentials: "ECR Push"
+        regionName: "eu-central-1"
+        imageSource: "imagename"
+        sourceImageName: "mlflow"
+        repositoryName: "dna/mlflow"
+        pushTag: "$(MLFLOW_VERSION)"
+      displayName: "Push mlflow image"
