@@ -50,11 +50,8 @@ stages:
         disableAutoCwd: true
         workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
         failOnStandardError: true
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(System.DefaultWorkingDirectory)/infrastructure'
-        ArtifactName: 'tf'
-        publishLocation: 'Container'
+    - publish: '$(System.DefaultWorkingDirectory)/infrastructure'
+      artifact: 'tf'
 - stage: Deploy
   displayName: Deploy infrastructure
   dependsOn: Build
@@ -65,12 +62,11 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'tf'
-        downloadPath: '$(System.ArtifactsDirectory)'
+    - download: current
+      artifact: tf
+      patterns: |
+        "**/*.tf"
+        "**/*.tfplan"
     - task: AWSShellScript@1
       displayName: Apply TF plan
       inputs:
