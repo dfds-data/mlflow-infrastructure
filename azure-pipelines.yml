@@ -30,12 +30,13 @@ stages:
         arguments: '-t mlflow:$(mlflow_version.tag)'
     - task: ECRPushImage@1
       inputs:
-        awsCredentials: "ECR Push"
-        regionName: "eu-central-1"
-        imageSource: "imagename"
-        sourceImageName: "mlflow"
-        repositoryName: "dna/mlflow"
-        pushTag: "$(mlflow_version.tag)"
+        awsCredentials: 'ECR Push'
+        regionName: 'eu-central-1'
+        imageSource: 'imagename'
+        sourceImageName: 'mlflow'
+        sourceImageTag: '$(mlflow_version.tag)'
+        repositoryName: 'dna/mlflow'
+        pushTag: '$(mlflow_version.tag)'
       displayName: "Push mlflow image"
     - task: TerraformInstaller@0
       inputs:
