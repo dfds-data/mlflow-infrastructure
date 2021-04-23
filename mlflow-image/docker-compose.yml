@@ -2,7 +2,7 @@ version: "3.8"
 services:
   mlflow:
     build: .
-    command: --host=0.0.0.0 --port=80 --backend-store-uri=postgresql://postgres:postgres@db:5432 --default-artifact-root=file//var/mlflow/mlruns
+    command: --host=0.0.0.0 --port=80 --backend-store-uri=postgresql://postgres:postgres@db:5432 --default-artifact-root=file//var/mlflow/mlruns --gunicorn-opts "--access-logfile -"
     ports:
       - "5000:80"
     depends_on:
