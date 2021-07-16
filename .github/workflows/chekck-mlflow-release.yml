@@ -9,8 +9,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Fetch release version
         run: |
-          curl -sL https://github.com/mlflow/mlflow/releases/latest | \
-          jq -r ".tag_name" > mlflow-image/mlflow_version
+          curl -sL https://api.github.com/repos/mlflow/mlflow/releases/latest | \
+          jq -r ".tag_name" | \
+          sed 's/v//g'
       - name: Check for modified files
         id: git-check
         run:
