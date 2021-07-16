@@ -1,9 +1,9 @@
 name: Update MLFlow version
 on:
   schedule:
-    - cron:  '*/10 * * * *' # '0 10 * * *'
+    - cron:  '0 10 * * *'
 jobs:
-  updateSwagger:
+  updateMlflow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Update swagger-ui to ${{ steps.mlflow-release.outputs.release_tag }}
+          commit-message: Update mlflow to ${{ steps.mlflow-release.outputs.release_tag }}
           title: Update MLFlow to ${{ steps.mlflow-release.outputs.release_tag }}
           body: |
             Updates [MLFlow][1] to ${{ steps.mlflow-release.outputs.release_tag }}
