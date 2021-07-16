@@ -12,13 +12,22 @@ jobs:
           curl -sL https://api.github.com/repos/mlflow/mlflow/releases/latest | \
           jq -r ".tag_name" | \
           sed 's/v//g' > mlflow-image/mlflow_version
-      - name: Check for modified files
+      - name: Check for modified files and duplicate PRs
         id: git-check
         run:
-          echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" ||
-          echo "true")
+          BRANCH_NAME=$(cat mlflow-image/mlflow_version)
+          NEW_RELEASE=$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
+          DUPLICATE=$([ -z "$(git show-ref refs/heads/auto/mlflow-v${BRANCH_NAME})" ] && echo "false" || echo "true")
+          if [[ $NEW_RELEASE -eq "true" && $DUPLICATE -eq "false" ]];
+          then
+              CREATE_PR="true"
+          else
+              CREATE_PR="false"
+          fi
+          
+          echo echo ::set-output name=proceed::${CREATE_PR}
       - name: Create PR with new version
-        if: steps.git-check.outputs.modified == 'true'
+        if: steps.git-check.outputs.proceed == 'true'
         uses: technote-space/create-pr-action@v2.0.4
         with:
           EXECUTE_COMMANDS: |
@@ -26,5 +35,5 @@ jobs:
           COMMIT_MESSAGE: "Release mlflow version $(cat mlflow-image/mlflow_version)"
           COMMIT_NAME: "Automatically detected mlflow release"
           COMMIT_EMAIL: "example@example.com"
-          PR_BRANCH_NAME: "feat/mlflow-v$(cat mlflow-image/mlflow_version)-${PR_ID}"
-          PR_TITLE: "Automatic PR: New mlflow release detected"
+          PR_BRANCH_NAME: "auto/mlflow-v$(cat mlflow-image/mlflow_version)"
+          PR_TITLE: "Automatic PR: New mlflow release $(cat mlflow-image/mlflow_version) detected"
