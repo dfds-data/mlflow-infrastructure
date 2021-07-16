@@ -1,0 +1,37 @@
+name: Get latest release version
+on:
+  schedule:
+    - cron: "*/10 * * * *" # "0 0 1-31/7 * *" # Every 7th day
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+      - name: Fetch release version
+        run: |
+          curl -sL https://github.com/mlflow/mlflow/releases/latest | \
+          jq -r ".tag_name" > mlflow-image/mlflow_version
+      - name: Check for modified files
+        id: git-check
+        run:
+          echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" ||
+          echo "true")
+      #      - name: Commit latest release version
+      #        run: |
+      #          git config --global user.name 'mamor1'
+      #          git config --global user.email 'your-email@users.noreply.github.com'
+      #          git commit -am "New release version"
+      #          git push
+      - name: Create PR with new version
+        if: steps.git-check.outputs.modified == 'true'
+        uses: technote-space/create-pr-action@v2.0.4
+        with:
+          EXECUTE_COMMANDS: |
+            cat "New release version found: $(cat mlflow-image/mlflow_version)"
+          COMMIT_MESSAGE: "chore: update npm dependencies"
+          COMMIT_NAME: "Automatically detected mlflow release"
+          COMMIT_EMAIL: "example@example.com"
+          PR_BRANCH_NAME: "feat/mlflow-v$(cat mlflow-image/mlflow_version)-${PR_ID}"
+          PR_TITLE: "Automatic PR: New mlflow release detected"
