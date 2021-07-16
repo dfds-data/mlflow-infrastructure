@@ -3,9 +3,12 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-  tags:
+  branches:
     include:
-    - "v*"
+    - master
+  paths:
+    include:
+    - mlflow-image/mlflow_version
 resources:
 - repo: self
 
