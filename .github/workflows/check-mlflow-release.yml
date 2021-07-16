@@ -1,7 +1,7 @@
 name: Update MLFlow version
 on:
   schedule:
-    - cron:  '0 10 * * *'
+    - cron:  '*/10 * * * *' # '0 10 * * *'
 jobs:
   updateSwagger:
     runs-on: ubuntu-latest
