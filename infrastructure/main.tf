@@ -69,7 +69,7 @@ module "db" {
   port                   = 5432
   publicly_accessible    = true
 
-  vpc_security_group_ids = [module.security_group.this_security_group_id]
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
@@ -92,8 +92,8 @@ resource "aws_ssm_parameter" "database_password" {
   description = "Password for mlflow"
   type        = "SecureString"
   value = jsonencode({
-    "username" = module.db.this_db_instance_username
-    "password" = module.db.this_db_instance_password
+    "username" = module.db.db_instance_username
+    "password" = module.db.db_instance_password
   })
   overwrite = true
 }
