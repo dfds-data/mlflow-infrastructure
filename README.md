@@ -27,6 +27,10 @@ following happens:
 - We may be using an old version of `psycopg2` - check the mlflow pin
 - Could be beneficial to upgrade to python 3.9 or 3.10 soon
 
+## Feature backlog
+
+- The k8s manifests are now on the client side. We could use something like kustomize.io to have the bulk of the manifests in this repo, and just a thin file with the needed changes in the client code.
+
 ## Releasing
 
 To release (ie. create a new version of the terraform module), just create a new release with the tag "v{version}" (for example v3.0.1). There is no release pipeline or anything like that, the clients refer to the source code directly.
