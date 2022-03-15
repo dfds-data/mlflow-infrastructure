@@ -44,7 +44,8 @@ module "security_group" {
   tags = local.tags
 }
 module "db" {
-  source = "terraform-aws-modules/rds/aws"
+  source  = "terraform-aws-modules/rds/aws"
+  version = "4.2.0"
 
   identifier = local.name
 
@@ -62,7 +63,6 @@ module "db" {
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
-  name                   = local.name
   username               = "superuser"
   create_random_password = true
   random_password_length = 32
@@ -83,8 +83,11 @@ module "db" {
     }
   ]
 
-  subnet_ids = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
-  tags       = local.tags
+  create_db_subnet_group = true
+  subnet_ids             = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+  tags                   = local.tags
+
+  storage_encrypted = false
 }
 
 resource "aws_ssm_parameter" "database_password" {
