@@ -4,8 +4,11 @@ provider "aws" {
   region = "eu-central-1"
 }
 // Mlflow bucket will get a random unique name
-resource "aws_s3_bucket" "mlflow_bucket" {
+resource "aws_s3_bucket_acl" "mlflow_bucket_acl" {
   acl = "private"
+  bucket = aws_s3_bucket.mlflow_bucket.id
+}
+resource "aws_s3_bucket" "mlflow_bucket" {
   tags = {
     Name = "Mlflow model artifacts bucket"
   }
