@@ -33,4 +33,3 @@ jobs:
           labels: dependencies, automated pr
           branch: mlflow-releases
           reviewers: kplauritzen,kaqmak,nybyhansen,pacanada
-          team-reviewers: data-science-chapter
