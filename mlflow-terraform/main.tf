@@ -55,7 +55,8 @@ data "aws_iam_policy_document" "mlflow_server_policy" {
   }
 }
 resource "aws_iam_policy" "mlflow_server_policy" {
-  description = "allows mlflow access to S3"
+  name        = "mlflow-server-policy"
+  description = "Allows mlflow access to S3"
   policy      = data.aws_iam_policy_document.mlflow_server_policy.json
 }
 // Create a random password to be used for the mlflow webserver
