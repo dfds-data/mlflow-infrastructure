@@ -16,6 +16,7 @@ resource "aws_s3_bucket" "mlflow_bucket" {
 // Create the IAM role to be used by MLFlow to connect to the S3 backend
 resource "aws_iam_role" "mlflow_server_role" {
   assume_role_policy = data.aws_iam_policy_document.irsa_trust_policy.json
+  name = "mlflow-server-role"
 }
 
 data "aws_iam_policy_document" "irsa_trust_policy" {
