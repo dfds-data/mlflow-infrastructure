@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "mlflow_bucket" {
 resource "aws_iam_role" "mlflow_server_role" {
   assume_role_policy = data.aws_iam_policy_document.irsa_trust_policy.json
 }
-}
+
 data "aws_iam_policy_document" "irsa_trust_policy" {
   statement {
     sid     = ""
