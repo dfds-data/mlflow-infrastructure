@@ -15,21 +15,23 @@ resource "aws_s3_bucket" "mlflow_bucket" {
 }
 // Create the IAM role to be used by MLFlow to connect to the S3 backend
 resource "aws_iam_role" "mlflow_server_role" {
-  assume_role_policy = data.aws_iam_policy_document.kiam_trust_policy.json
+  assume_role_policy = data.aws_iam_policy_document.irsa_trust_policy.json
 }
-data "aws_iam_policy_document" "kiam_trust_policy" {
+}
+data "aws_iam_policy_document" "irsa_trust_policy" {
   statement {
-    sid = ""
-
-    effect = "Allow"
+    sid     = ""
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.kubernetes_account_number}:role/eks-hellman-kiam-server"]
+      type        = "Federated"
+      identifiers = ["arn:aws:iam::${var.kubernetes_account_number}:oidc-provider/oidc.eks.eu-west-1.amazonaws.com/id/B182759F93D251942CB146063F57036B"]
     }
-
-    actions = [
-      "sts:AssumeRole"
-    ]
+    condition {
+      test     = "StringEquals"
+      variable = "oidc.eks.eu-west-1.amazonaws.com/id/B182759F93D251942CB146063F57036B:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.service_account}"]
+    }
   }
 }
 resource "aws_iam_role_policy_attachment" "mlflow_policy_attachment" {
