@@ -57,8 +57,14 @@ module "db" {
   engine_version = "14"
   family         = "postgres14" # DB parameter group
   instance_class = "db.t3.micro"
-
   allocated_storage = 20
+
+  # Upgrading engine versions
+  allow_major_version_upgrade = true
+  auto_minor_version_upgrade  = true
+
+  # Apply changes immediately instead of waiting for maintenance window
+  apply_immediately = true
 
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
