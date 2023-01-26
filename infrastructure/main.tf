@@ -63,8 +63,8 @@ module "db" {
   allow_major_version_upgrade = true
   auto_minor_version_upgrade  = true
 
-  # Apply changes immediately instead of waiting for maintenance window
-  apply_immediately = true
+  # Apply changes during maintenance window
+  apply_immediately = false
 
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
