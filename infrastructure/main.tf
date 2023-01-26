@@ -86,6 +86,12 @@ module "db" {
     {
       name  = "rds.force_ssl"
       value = 1
+    },
+    # Set timeout for idle connections to 24 hours in milliseconds
+    # See https://postgresqlco.nf/doc/en/param/idle_session_timeout/
+    {
+      name = "idle_session_timeout"
+      value = 86400000 
     }
   ]
 
