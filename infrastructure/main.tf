@@ -56,7 +56,7 @@ module "db" {
   engine         = "postgres"
   engine_version = "14"
   family         = "postgres14" # DB parameter group
-  instance_class = "db.t3.micro"
+  instance_class = "db.t3.small"
   allocated_storage = 20
 
   # Upgrading engine versions
