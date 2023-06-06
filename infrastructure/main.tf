@@ -45,7 +45,7 @@ module "security_group" {
 }
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "4.2.0"
+  version = "5.9.0"
 
   identifier = local.name
 
