@@ -10,8 +10,8 @@ jobs:
       - name: Get Latest MLFlow release
         id: mlflow-release
         run: |
-          echo ::set-output name=release_tag::$(curl -sL https://api.github.com/repos/mlflow/mlflow/releases/latest | jq -r ".tag_name" | sed 's/v//g')
-          echo ::set-output name=current_tag::$(<mlflow-image/mlflow_version)
+          echo release_tag=$(curl -sL https://api.github.com/repos/mlflow/mlflow/releases/latest | jq -r ".tag_name" | sed 's/v//g') >> $GITHUB_OUTPUT
+          echo current_tag=$(<mlflow-image/mlflow_version) >> $GITHUB_OUTPUT
       - name: Update MLFlow version file
         if: (steps.mlflow-release.outputs.current_tag != steps.mlflow-release.outputs.release_tag) && (steps.mlflow-release.outputs.release_tag != 'null')
         env:
