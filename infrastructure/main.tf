@@ -110,5 +110,4 @@ resource "aws_ssm_parameter" "database_password" {
     "username" = module.db.db_instance_username
     "password" = module.db.db_instance_password
   })
-  overwrite = true
 }
