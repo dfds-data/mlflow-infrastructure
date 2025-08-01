@@ -45,6 +45,8 @@ stages:
       parameters:
         docker_image_name: $(DOCKER_IMAGE)
         dockerfile_path: "mlflow-image/Dockerfile"
+        docker_build_context: "mlflow-image"
+        additional_docker_build_args: "--tag $(DOCKER_IMAGE):$(mlflow_version.mlflow_tag)"
     
     - task: ECRPushImage@1
       inputs:
