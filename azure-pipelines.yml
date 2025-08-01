@@ -55,7 +55,7 @@ stages:
         imageSource: "imagename"
         sourceImageName: "$(DOCKER_IMAGE)"
         repositoryName: "$(ECR_REPOSITORY)"
-        pushTag: "$(Build.BuildId)"
+        pushTag: "$(mlflow_version.mlflow_tag)"
       displayName: "Push mlflow image"
     
     - task: ECRPushImage@1
