@@ -27,6 +27,7 @@ stages:
       - template: tofu-check.yaml@templates
         parameters:
           infrastructure_folder: "infrastructure"
+          aws_credentials: "AWS mlops"
   - job: build_mlflow
     displayName: "Build MLflow"
     variables:
