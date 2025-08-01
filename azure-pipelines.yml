@@ -56,16 +56,6 @@ stages:
         sourceImageName: "$(DOCKER_IMAGE)"
         repositoryName: "$(ECR_REPOSITORY)"
         pushTag: "$(mlflow_version.mlflow_tag)"
-      displayName: "Push mlflow image"
-    
-    - task: ECRPushImage@1
-      inputs:
-        awsCredentials: "ECR Push"
-        regionName: "eu-central-1"
-        imageSource: "imagename"
-        sourceImageName: "$(DOCKER_IMAGE)"
-        repositoryName: "$(ECR_REPOSITORY)"
-        pushTag: "$(mlflow_version.mlflow_tag)"
       displayName: "Push mlflow image with version tag"
     - publish: 'infrastructure'
       artifact: 'tf'
