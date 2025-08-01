@@ -28,6 +28,7 @@ stages:
         parameters:
           infrastructure_folder: "infrastructure"
           aws_credentials: "AWS mlops"
+          extra_commands: "tofu apply -auto-approve"
   - job: build_mlflow
     displayName: "Build MLflow"
     variables:
