@@ -12,49 +12,58 @@ trigger:
     - infrastructure
 resources:
 - repo: self
+  repositories:
+    - repository: templates
+      type: git
+      name: "Smart Data/pipeline_templates"
+      ref: refs/tags/v0.9.5
 
 stages:
 - stage: Build
   displayName: Build image
   jobs:
-  - job: Image
-    displayName: Image
-    pool:
-      vmImage: ubuntu-latest
+  - job: tofu
+    displayName: "Check that OpenTofu plan is up to date"
+    steps: 
+      - template: tofu-check.yaml@templates
+        parameters:
+          infrastructure_folder: "infrastructure"
+  - job: build_mlflow
+    displayName: "Build MLflow"
+    variables:
+      DOCKER_IMAGE: "mlflow"
+      ECR_REPOSITORY: "dna/mlflow"
     steps:
     - bash: |
         MLFLOW_VERSION=$(cat ./mlflow-image/mlflow_version)
         echo $MLFLOW_VERSION
-        echo "##vso[task.setvariable variable=tag;isOutput=true]$MLFLOW_VERSION"
+        echo "##vso[task.setvariable variable=mlflow_tag;isOutput=true]$MLFLOW_VERSION"
       name: mlflow_version
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: 'build'
-        Dockerfile: './mlflow-image/Dockerfile'
-        arguments: '-t mlflow:$(mlflow_version.tag)'
+      displayName: "Read MLflow version"
+    
+    - template: docker-build-cache.yaml@templates
+      parameters:
+        docker_image_name: $(DOCKER_IMAGE)
+        dockerfile_path: "mlflow-image/Dockerfile"
+    
     - task: ECRPushImage@1
       inputs:
-        awsCredentials: 'ECR Push'
-        regionName: 'eu-central-1'
-        imageSource: 'imagename'
-        sourceImageName: 'mlflow'
-        sourceImageTag: '$(mlflow_version.tag)'
-        repositoryName: 'dna/mlflow'
-        pushTag: '$(mlflow_version.tag)'
+        awsCredentials: "ECR Push"
+        regionName: "eu-central-1"
+        imageSource: "imagename"
+        sourceImageName: "$(DOCKER_IMAGE)"
+        repositoryName: "$(ECR_REPOSITORY)"
+        pushTag: "$(Build.BuildId)"
       displayName: "Push mlflow image"
-    - task: AWSShellScript@1
-      displayName: Create TF plan
+    
+    - task: ECRPushImage@1
       inputs:
-        awsCredentials: 'AWS mlops'
-        regionName: 'eu-central-1'
-        scriptType: 'inline'
-        inlineScript: |
-          terraform init
-          terraform plan --out plan.tfplan
-          terraform apply -auto-approve plan.tfplan
-        disableAutoCwd: true
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
-        failOnStandardError: true
+        awsCredentials: "ECR Push"
+        regionName: "eu-central-1"
+        imageSource: "imagename"
+        sourceImageName: "$(DOCKER_IMAGE)"
+        repositoryName: "$(ECR_REPOSITORY)"
+        pushTag: "$(mlflow_version.mlflow_tag)"
+      displayName: "Push mlflow image with version tag"
     - publish: 'infrastructure'
       artifact: 'tf'
