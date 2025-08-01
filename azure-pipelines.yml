@@ -53,7 +53,7 @@ stages:
         awsCredentials: "ECR Push"
         regionName: "eu-central-1"
         imageSource: "imagename"
-        sourceImageName: "$(DOCKER_IMAGE)"
+        sourceImageName: "$(DOCKER_IMAGE):$(mlflow_version.mlflow_tag)"
         repositoryName: "$(ECR_REPOSITORY)"
         pushTag: "$(mlflow_version.mlflow_tag)"
       displayName: "Push mlflow image with version tag"
