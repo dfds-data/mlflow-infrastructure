@@ -17,6 +17,9 @@ resources:
       name: "Smart Data/pipeline_templates"
       ref: refs/tags/v0.9.5
 
+pool:
+  vmImage: "ubuntu-latest"
+
 stages:
 - stage: Build
   displayName: Build image
