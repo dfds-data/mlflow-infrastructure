@@ -1,0 +1,20 @@
+[project]
+name = "mlflow-infrastructure"
+version = "3.11.1"
+description = "MLflow infrastructure components for DFDS"
+authors = [
+    { name = "Per Lunnemann", email = "pehan@dfds.com" },
+    { name = "Kuba Kornecki", email = "jakor@dfds.com" },
+    { name = "Kaspar Hageman", email = "kashage@dfds.com" },
+]
+requires-python = ">=3.13,<3.14"
+
+dependencies = [
+    "mlflow[extras]~=3.11.1",
+    "psycopg2-binary~=2.9.12"
+]
+
+[tool.uv]
+package = true
+python-preference = "only-managed"
+exclude-newer = "3 days"

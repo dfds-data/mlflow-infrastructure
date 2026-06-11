@@ -8,7 +8,7 @@ trigger:
     - master
   paths:
     include:
-    - mlflow-image/mlflow_version
+    - mlflow-image
     - infrastructure
 resources:
   repositories:
@@ -39,7 +39,7 @@ stages:
       ECR_REPOSITORY: "dna/mlflow"
     steps:
     - bash: |
-        MLFLOW_VERSION=$(cat ./mlflow-image/mlflow_version)
+        MLFLOW_VERSION=$(grep -oP '(?<=version = ")[^"]+' mlflow-image/pyproject.toml)
         echo $MLFLOW_VERSION
         echo "##vso[task.setvariable variable=mlflow_tag;isOutput=true]$MLFLOW_VERSION"
       name: mlflow_version
