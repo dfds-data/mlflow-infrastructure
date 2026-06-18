@@ -1,0 +1,10 @@
+# Managed with prek (https://prek.j178.dev), a drop-in replacement for pre-commit.
+# Run `prek install` once to enable the git hooks defined below.
+default_install_hook_types: [commit-msg]
+
+repos:
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.8.3
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
