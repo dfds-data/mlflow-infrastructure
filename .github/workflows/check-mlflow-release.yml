@@ -19,14 +19,13 @@ jobs:
         env:
           RELEASE_TAG: ${{ steps.mlflow-release.outputs.release_tag }}
         run: |
-          sed -i "s/^version = \".*\"/version = \"$RELEASE_TAG\"/" pyproject.toml
           sed -i "s/\"mlflow\[extras\]~=.*\"/\"mlflow[extras]~=$RELEASE_TAG\"/" pyproject.toml
           pip install uv
           uv lock
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: Update mlflow to ${{ steps.mlflow-release.outputs.release_tag }}
+          commit-message: "feat: update mlflow to ${{ steps.mlflow-release.outputs.release_tag }}"
           title: Update MLFlow to ${{ steps.mlflow-release.outputs.release_tag }}
           body: |
             Updates [MLFlow][1] to ${{ steps.mlflow-release.outputs.release_tag }}

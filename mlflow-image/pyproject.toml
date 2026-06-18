@@ -1,6 +1,6 @@
 [project]
 name = "mlflow-infrastructure"
-version = "3.11.1"
+version = "1.0.0"
 description = "MLflow infrastructure components for DFDS"
 authors = [
     { name = "Per Lunnemann", email = "pehan@dfds.com" },
@@ -14,7 +14,22 @@ dependencies = [
     "psycopg2-binary~=2.9.12"
 ]
 
+[dependency-groups]
+dev = [
+    "commitizen>=4,<5",
+    "prek>=0.4.4,<0.5",
+]
+
 [tool.uv]
 package = true
 python-preference = "only-managed"
 exclude-newer = "3 days"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "pep621"
+tag_format = "$version"
+update_changelog_on_bump = true
+major_version_zero = false
+changelog_file = "../CHANGELOG.md"
+bump_message = "bump: version $current_version → $new_version [skip ci]"

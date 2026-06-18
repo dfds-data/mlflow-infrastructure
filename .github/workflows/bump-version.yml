@@ -1,0 +1,38 @@
+name: Bump version
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'mlflow-image/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bump-version
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    # Avoid an infinite loop: the bump commit itself touches mlflow-image/.
+    # Pushes made with GITHUB_TOKEN don't re-trigger workflows, but this guard
+    # adds belt-and-braces protection.
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    runs-on: ubuntu-latest
+    name: Bump version and update changelog
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@0.27.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          working_directory: mlflow-image
+          changelog: true
+          push: true

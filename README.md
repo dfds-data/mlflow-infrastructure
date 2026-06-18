@@ -22,6 +22,51 @@ following happens:
 - The new version is built into a docker image and pushed
 - The backend terraform is run (the one in `/infrastructure`, nothing changes probably)
 
+## Versioning & commits
+
+This repo uses [Conventional Commits](https://www.conventionalcommits.org/) together with
+[commitizen](https://commitizen-tools.github.io/commitizen/) to manage the project version, which
+lives in [`mlflow-image/pyproject.toml`](./mlflow-image/pyproject.toml). The version is no longer
+tied to the MLflow version: any change under `mlflow-image/` bumps it.
+
+### How the version is bumped
+
+When a PR is merged into `master`, the
+[`bump-version`](./.github/workflows/bump-version.yml) workflow runs **only if files under
+`mlflow-image/` changed**. It uses commitizen to:
+
+1. Determine the next [SemVer](https://semver.org/) version from the conventional commit messages
+   since the last tag (`fix:` → patch, `feat:` → minor, `feat!:`/`BREAKING CHANGE:` → major).
+2. Update the version in `pyproject.toml` and prepend the changes to [`CHANGELOG.md`](./CHANGELOG.md).
+3. Commit (`bump: version X → Y [skip ci]`), tag, and push back to `master`.
+
+The MLflow auto-update PR uses a `feat: update mlflow to <version>` commit so it bumps the version
+like any other change.
+
+### Local setup (prek)
+
+Git hooks are managed with [prek](https://prek.j178.dev), a fast drop-in replacement for
+pre-commit that reads the same [`.pre-commit-config.yaml`](./.pre-commit-config.yaml). It installs a
+`commit-msg` hook that validates every commit message against the Conventional Commits spec.
+
+Install prek and enable the hooks once per clone. The project and its lock file live in
+`mlflow-image/`, so pass `--project mlflow-image` to run the `uv` commands from the repo root
+(this keeps the working directory at the root, where `.git` and `.pre-commit-config.yaml` live):
+
+```bash
+# prek and commitizen are part of the `dev` dependency group
+uv sync --project mlflow-image
+
+# Enable the git hooks defined in .pre-commit-config.yaml
+uv run --project mlflow-image prek install
+```
+
+After that, commits with a non-conventional message are rejected locally. You can also write commits
+interactively with `uv run --project mlflow-image cz commit`.
+
+> Alternatively, `cd mlflow-image` first and run the commands without `--project` (`uv sync`,
+> `uv run prek install`).
+
 ## Known issues
 
 - We may be using an old version of `psycopg2` - check the mlflow pin
