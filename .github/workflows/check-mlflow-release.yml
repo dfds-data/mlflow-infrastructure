@@ -36,4 +36,4 @@ jobs:
             [2]: https://github.com/peter-evans/create-pull-request
           labels: dependencies, automated pr
           branch: mlflow-releases
-          reviewers: kaqmak,kdhageman
+          reviewers: kaqmak,kdhageman,AlexBjerre,yuanlia848
