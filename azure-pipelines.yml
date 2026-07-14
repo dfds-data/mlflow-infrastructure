@@ -39,7 +39,7 @@ stages:
       ECR_REPOSITORY: "dna/mlflow"
     steps:
     - bash: |
-        MLFLOW_VERSION=$(grep -oP '(?<=version = ")[^"]+' mlflow-image/pyproject.toml)
+        MLFLOW_VERSION=$(grep -oP 'mlflow\[extras\]~=\K[0-9.]+' mlflow-image/pyproject.toml)
         echo $MLFLOW_VERSION
         echo "##vso[task.setvariable variable=mlflow_tag;isOutput=true]$MLFLOW_VERSION"
       name: mlflow_version
