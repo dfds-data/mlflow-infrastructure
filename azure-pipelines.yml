@@ -39,8 +39,12 @@ stages:
       ECR_REPOSITORY: "dna/mlflow"
     steps:
     - bash: |
-        MLFLOW_VERSION=$(grep -oP '(?<=version = ")[^"]+' mlflow-image/pyproject.toml)
-        echo $MLFLOW_VERSION
+        MLFLOW_VERSION=$(grep -m1 -oP 'mlflow\[extras\]~=\K[0-9]+(\.[0-9]+)*' mlflow-image/pyproject.toml)
+        if [ -z "$MLFLOW_VERSION" ]; then
+          echo "Failed to extract MLflow version from mlflow-image/pyproject.toml" >&2
+          exit 1
+        fi
+        echo "$MLFLOW_VERSION"
         echo "##vso[task.setvariable variable=mlflow_tag;isOutput=true]$MLFLOW_VERSION"
       name: mlflow_version
       displayName: "Read MLflow version"
