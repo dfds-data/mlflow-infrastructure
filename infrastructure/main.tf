@@ -28,19 +28,22 @@ resource "aws_default_subnet" "default_az2" {
 }
 module "security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 3"
+  version = "~> 6"
 
   name        = "${local.name}-database-security-group"
   description = "${local.name} backend security group"
   vpc_id      = aws_default_vpc.default.id
 
   # ingress
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "postgresql-tcp"
-      cidr_blocks = "0.0.0.0/0"
-    },
-  ]
+  ingress_rules = {
+    postgresql = {
+      ip_protocol = "tcp"
+      from_port   = 5432
+      to_port     = 5432
+      cidr_ipv4   = "0.0.0.0/0"
+      description = "PostgreSQL access"
+    }
+  }
   tags = local.tags
 }
 module "db" {
@@ -75,7 +78,7 @@ module "db" {
   port                   = 5432
   publicly_accessible    = true
 
-  vpc_security_group_ids = [module.security_group.security_group_id]
+  vpc_security_group_ids = [module.security_group.id]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
