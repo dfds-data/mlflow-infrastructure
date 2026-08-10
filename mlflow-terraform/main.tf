@@ -17,7 +17,7 @@ resource "aws_iam_role" "mlflow_server_role" {
 
 data "aws_iam_policy_document" "irsa_trust_policy" {
   statement {
-    sid     = ""
+    sid     = "AssumeRoleWithWebIdentity1"
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
@@ -27,6 +27,20 @@ data "aws_iam_policy_document" "irsa_trust_policy" {
     condition {
       test     = "StringEquals"
       variable = "oidc.eks.eu-west-1.amazonaws.com/id/B182759F93D251942CB146063F57036B:sub"
+      values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.service_account}"]
+    }
+  }
+  statement {
+    sid     = "AssumeRoleWithWebIdentity2"
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    principals {
+      type        = "Federated"
+      identifiers = ["arn:aws:iam::${var.kubernetes_account_number}:oidc-provider/oidc.eks.eu-west-1.amazonaws.com/id/2A3537C379F58D1212A72BD93332F5C9"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "oidc.eks.eu-west-1.amazonaws.com/id/2A3537C379F58D1212A72BD93332F5C9:sub"
       values   = ["system:serviceaccount:${var.kubernetes_namespace}:${var.service_account}"]
     }
   }
