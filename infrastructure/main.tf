@@ -57,8 +57,8 @@ module "db" {
 
   # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
   engine         = "postgres"
-  engine_version = "14"
-  family         = "postgres14" # DB parameter group
+  engine_version = "17"
+  family         = "postgres17" # DB parameter group
   instance_class = "db.t3.small"
   allocated_storage = 258
 
