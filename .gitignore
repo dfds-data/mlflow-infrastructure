@@ -3,3 +3,4 @@ mlruns
 venv
 .terraform*
 *.tfstate*
+*.tfplan
