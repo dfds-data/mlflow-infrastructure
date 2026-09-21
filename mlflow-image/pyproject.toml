@@ -10,7 +10,7 @@ authors = [
 requires-python = ">=3.13,<3.14"
 
 dependencies = [
-    "mlflow[extras]~=3.16.0",
+    "mlflow[extras]~=3.16.1",
     "psycopg2-binary~=2.9.12"
 ]
 
